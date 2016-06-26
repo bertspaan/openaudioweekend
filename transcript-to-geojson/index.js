@@ -12,7 +12,7 @@ try {
 }
 
 const nerDir = `${__dirname}/../stanford-ner`
-const nerCmd = (filename) => ({
+const nerCmd = (filename, classifier) => ({
   command: 'java',
   args: [
     `-mx600m`,
@@ -20,7 +20,7 @@ const nerCmd = (filename) => ({
      `${nerDir}/*:${nerDir}/lib/*`,
      `edu.stanford.nlp.ie.crf.CRFClassifier`,
      `-loadClassifier`,
-     `${nerDir}/classifiers/english.all.3class.distsim.crf.ser.gz`,
+     classifier ? classifier : `${nerDir}/classifiers/english.all.3class.distsim.crf.ser.gz`,
      `-textFile`,
      `${filename}`,
      `-outputFormat`,
@@ -95,8 +95,19 @@ const geocode = (entity, callback) => {
 }
 
 
-function fromFile (filename, callback) {
-  const spawnArgs = nerCmd(filename)
+function fromFile (filename, options, callback) {
+  // See if only two arguments are provided,
+  // in that case, options arg is callback
+  if (!callback) {
+    callback = options
+  }
+
+  var classifier
+  if (options && options.classifier) {
+    classifier = options.classifier
+  }
+
+  const spawnArgs = nerCmd(filename, classifier)
   var ner = spawn(spawnArgs.command, spawnArgs.args)
 
   var line = -1
@@ -130,7 +141,7 @@ function fromFile (filename, callback) {
     })
 }
 
-function fromString (string, callback) {
+function fromString (string, options, callback) {
   tmp.file((err, filename, fd, cleanupCallback) => {
     if (err) {
       callback(err)
@@ -138,7 +149,7 @@ function fromString (string, callback) {
     }
 
     fs.writeFileSync(filename, string)
-    fromFile(filename, (err, featuresStream) => {
+    fromFile(filename, options, (err, featuresStream) => {
       cleanupCallback()
       callback(err, featuresStream)
     })

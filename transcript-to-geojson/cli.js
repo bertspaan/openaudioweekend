@@ -10,9 +10,12 @@ if (!argv._ || argv._.length !== 1) {
   process.exit(1)
 }
 
-var filename = argv._[0]
+const filename = argv._[0]
+const options = {
+  classifier: argv.classifier
+}
 
-transcriptToGeojson.fromFile(filename, (err, stream) => {
+transcriptToGeojson.fromFile(filename, options, (err, stream) => {
   if (err) {
     console.error(err.message)
   } else {

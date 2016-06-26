@@ -53,15 +53,3 @@ Using Stanford’s Natural Language Entity Extraction tools identify locations w
 ### Approach
 
 In order to make this project work, we needed to be able to parse out street names. Stanford’s tool does not currently operate at that granular a level. We used Metro Extracts, a JSON data set, to create a file containing place names and their corresponding coordinates. We then used this file to train NER to recognize our NYC place names.
-
-### Future Ideas
-
-Train NER to read neighborhoods, landmarks, business names, etc.
-
-Train NER to recognize other cities
-
-Add functionality to allow multiple transcripts to be mapped at once
-
-Add functionality to queue up the recording associated with a pin at the time the location is spoken
-
-Add time! Plot dates spoken in oral histories to a timeline

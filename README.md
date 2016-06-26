@@ -44,7 +44,7 @@ Communities assign meaning to archival collections and what better way to connec
 
 ### Who we are
 
-[Bert Spaan](https://github.com/bertspaan), [Evan Misshula](https://github.com/EvanMisshula), Patrick Smyth, [Rebecca Chandler](https://github.com/rebschandler)
+[Bert Spaan](https://github.com/bertspaan), [Evan Misshula](https://github.com/EvanMisshula), [Patrick Smyth] (https://github.com/smythp), [Rebecca Chandler](https://github.com/rebschandler)
 
 
 ### The Plan

@@ -142,6 +142,12 @@ function fromFile (filename, options, callback) {
 }
 
 function fromString (string, options, callback) {
+  // See if only two arguments are provided,
+  // in that case, options arg is callback
+  if (!callback) {
+    callback = options
+  }
+
   tmp.file((err, filename, fd, cleanupCallback) => {
     if (err) {
       callback(err)

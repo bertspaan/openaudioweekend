@@ -6,16 +6,20 @@ L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
 })
 .addTo(map)
 
+function onEachFeature(feature, layer) {
+  layer.bindPopup(feature.properties.entity)
+}
+
 var geojsonLayer = L.geoJson(null, {
+  onEachFeature: onEachFeature,
   pointToLayer: function(feature, latlon) {
     return L.circleMarker(latlon, {
       radius: 8,
-      fillColor: 'red',
-      color: 'red',
+      fillColor: '#6ae2a1',
+      color: '#6ae2a1',
       weight: 1,
       opacity: 1,
-      opacity: 0.8,
-      fillOpacity: 0.8
+      fillOpacity: 1
     })
   }
 }).addTo(map)
@@ -50,12 +54,12 @@ function transcriptToGeojson (transcript, callback) {
 
 document.getElementById('submit')
   .addEventListener('click', () => {
+    geojsonLayer.clearLayers()
     const transcript = document.getElementById('editor').value
     transcriptToGeojson(transcript, function(err, geojson) {
       if (err) {
         console.error(err.message)
       } else {
-        geojsonLayer.clearLayers()
         geojsonLayer.addData(geojson)
         map.fitBounds(geojsonLayer.getBounds())
       }

@@ -17,7 +17,11 @@ app.use(express.static('public'))
 app.post('/transcript', (req, res) => {
   const transcript = req.body
 
+  console.log(`New transcript received, ${transcript.length} characters`)
+
   transcriptToGeojson.fromString(transcript, (err, featuresStream) => {
+    console.log(`Done converting to GeoJSON, ${err ? 'with errors' : 'successful'}`)
+
     if (err) {
       res.status(500).send({error: err.message})
     } else {

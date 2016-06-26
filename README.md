@@ -34,7 +34,7 @@ If that works, run the index.js script with:
 
 ### About
 
-Often, cultural heritage collections have a strong connection to place. Place can give meaning or character to a collection. When working with oral histories, this connection can be especially strong.
+Often, cultural heritage collections have a strong connection to place. Place can giveme aning or character to a collection. When working with oral histories, this connection can be especially strong.
 
 Being able to visualize spatial locations within a particular collection or within even one recording can help us to better understand and engage with it. It allows us to spot certain connections easily; connections that might have only been possible to discover before by listening to hours of recordings or reading through pages of transcripts. Within a given oral history, we could track an interviewee’s trajectory through the world. Or if a particular physical location interests us, we could zero in on those recordings associated with it.
 

@@ -53,8 +53,8 @@ Using Stanford’s Natural Language Entity Extraction tools identify locations w
 
 ### The Tools
 
-Stanford Natural Entity Recognizer (NER)   
-Metro Extracts  
+[Stanford Natural Entity Recognizer (NER)] (http://nlp.stanford.edu/software/CRF-NER.shtml)   
+[Metro Extracts] (https://mapzen.com/data/metro-extracts/)  
 
 ### Approach
 

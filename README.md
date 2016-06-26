@@ -1,6 +1,6 @@
 # Storynode
 
-### Requrements
+### Requirements
 
 Java version 1.8 or greater  
 Node version 6.0 or greater  

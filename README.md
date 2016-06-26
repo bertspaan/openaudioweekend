@@ -1,5 +1,7 @@
 # Open Audio Weekend
 
+Needs Java 1.8 and Node.js 6.
+
 Download and unzip:
 
   ./download-stanford-ner.sh

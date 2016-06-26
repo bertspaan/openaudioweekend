@@ -90,7 +90,6 @@ const geocode = (entity, callback) => {
             feature = geojson.features[0]
 
             feature.properties = Object.assign({entity}, feature.properties)
-            // feature.properties.entity = entity
           } else {
             error = `Not found: "${entity}"`
           }

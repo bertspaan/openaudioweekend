@@ -7,7 +7,8 @@
     "JSONStream": "^1.1.2",
     "highland": "^2.8.1",
     "minimist": "^1.2.0",
-    "request": "^2.72.0"
+    "request": "^2.72.0",
+    "tmp": "0.0.28"
   },
   "devDependencies": {},
   "scripts": {

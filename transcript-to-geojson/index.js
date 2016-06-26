@@ -1,29 +1,18 @@
-const argv = require('minimist')(process.argv.slice(2))
 const fs = require('fs')
+var tmp = require('tmp')
 const spawn = require('child_process').spawn
 const request = require('request')
-const JSONStream = require('JSONStream')
 const H = require('highland')
 
-const geojsonOpen = '{"type":"FeatureCollection","features":['
-const geojsonClose = ']}\n'
-
-var geocodes
+var geocodesCache
 try {
-  geocodes = require('./geocodes.json')
+  geocodesCache = require('./.geocodes-cache.json')
 } catch (err) {
-  geocodes = {}
+  geocodesCache = {}
 }
-
-if (!argv._ || argv._.length !== 1) {
-  console.error('Please provide transcript file as command line argument')
-  process.exit(1)
-}
-
-var transcript = argv._[0]
 
 const nerDir = `${__dirname}/../stanford-ner`
-const nerCmd = (transcript) => ({
+const nerCmd = (filename, classifier) => ({
   command: 'java',
   args: [
     `-mx600m`,
@@ -31,9 +20,9 @@ const nerCmd = (transcript) => ({
      `${nerDir}/*:${nerDir}/lib/*`,
      `edu.stanford.nlp.ie.crf.CRFClassifier`,
      `-loadClassifier`,
-     `${nerDir}/classifiers/english.all.3class.distsim.crf.ser.gz`,
+     classifier ? classifier : `${nerDir}/classifiers/english.all.3class.distsim.crf.ser.gz`,
      `-textFile`,
-     `${transcript}`,
+     `${filename}`,
      `-outputFormat`,
      `tabbedEntities`
   ]
@@ -46,8 +35,8 @@ const geocode = (entity, callback) => {
   // var googleKey = 'AIzaSyDOmIY2ehySz326NShOZDJvTnvLEpnBaGo'
   // var url = `https://maps.googleapis.com/maps/api/geocode/json?address=${entity}&key=${googleKey}`
 
-  if (geocodes[entity] !== undefined) {
-    setImmediate(callback, null, geocodes[entity])
+  if (geocodesCache[entity] !== undefined) {
+    setImmediate(callback, null, geocodesCache[entity])
   } else {
     request(url, (err, response, body) => {
       var error = err
@@ -98,48 +87,74 @@ const geocode = (entity, callback) => {
         }
       }
 
-      geocodes[entity] = feature
-      fs.writeFileSync('./geocodes.json', JSON.stringify(geocodes, null, 2))
+      geocodesCache[entity] = feature
+      fs.writeFileSync(`${__dirname}/.geocodes-cache.json`, JSON.stringify(geocodesCache, null, 2))
       callback(error, feature)
     })
   }
 }
 
-const spawnArgs = nerCmd(transcript)
-var ner = spawn(spawnArgs.command, spawnArgs.args)
 
-var line = -1
-var lastLocation
-var lastLocationLine = -1
+function fromFile (filename, options, callback) {
+  // See if only two arguments are provided,
+  // in that case, options arg is callback
+  if (!callback) {
+    callback = options
+  }
 
-H(ner.stdout)
-  .split()
-  .compact()
-  .map((row) => {
-    var entity, type, text
-    [entity, type, text] = row.split('\t')
+  var classifier
+  if (options && options.classifier) {
+    classifier = options.classifier
+  }
 
-    if (type === 'LOCATION') {
-      return entity
-    } else {
-      return null
+  const spawnArgs = nerCmd(filename, classifier)
+  var ner = spawn(spawnArgs.command, spawnArgs.args)
+
+  var line = -1
+  var lastLocation
+  var lastLocationLine = -1
+
+  H(ner.stdout)
+    .split()
+    .compact()
+    .map((row) => {
+      var entity, type, text
+      [entity, type, text] = row.split('\t')
+
+      if (type === 'LOCATION') {
+        return entity
+      } else {
+        return null
+      }
+    })
+    .compact()
+    .uniq()
+    .toArray((entities) => {
+      var featuresStream = H(entities)
+        .map(H.curry(geocode))
+        .nfcall([])
+        .series()
+        .errors(callback)
+        .compact()
+
+      callback(null, featuresStream)
+    })
+}
+
+function fromString (string, options, callback) {
+  tmp.file((err, filename, fd, cleanupCallback) => {
+    if (err) {
+      callback(err)
+      return
     }
+
+    fs.writeFileSync(filename, string)
+    fromFile(filename, options, (err, featuresStream) => {
+      cleanupCallback()
+      callback(err, featuresStream)
+    })
   })
-  .compact()
-  .uniq()
-  .toArray((entities) => {
-    H(entities)
-      .map(H.curry(geocode))
-      .nfcall([])
-      .series()
-      .errors((err) => {
-        console.error('Error:', err)
-      })
-      .compact()
-      .map((chips) => {
-        // console.log(chips)
-        return chips
-      })
-      .pipe(JSONStream.stringify(geojsonOpen, ',\n', geojsonClose))
-      .pipe(argv.o ? fs.createWriteStream(argv.o, 'utf8') : process.stdout)
-  })
+}
+
+module.exports.fromFile = fromFile
+module.exports.fromString = fromString

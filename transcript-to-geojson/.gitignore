@@ -1,3 +1,2 @@
 node_modules
-geocodes.json
-stanford-ner
+.geocodes-cache.json

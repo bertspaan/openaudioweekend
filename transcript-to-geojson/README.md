@@ -6,4 +6,9 @@ First, install dependencies:
 
 Then, run it:
 
-    node index.js transcripts/nypl-live/live-from-the-nypl-maya-lin--paul-holdengrber.text
+    node cli.js transcripts/nypl-live/live-from-the-nypl-maya-lin--paul-holdengrber.text
+
+## API
+
+- fromFile
+- fromString

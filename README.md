@@ -11,28 +11,20 @@ Needs Java 1.8 and Node.js 6.
 
 Download and unzip:
 
-	```
-	$ ./download-stanford-ner.sh
-	```
+		$ ./download-stanford-ner.sh
 
 Install node dependencies:
-	
-	```
-	cd openaudioweekend
-	$ npm install
-	```
-	
+
+		cd openaudioweekend
+		$ npm install
+
 Test the Stanford NER by running:
 
-	```
-	java -mx600m -cp "./stanford-ner/*:./stanford-ner/lib/*" edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier stanford-ner/classifiers/english.all.3class.distsim.crf.ser.gz -textFile transcript-to-geojson/transcripts/nypl-live/live-from-the-nypl-elizabeth-alexander--hilton-als.text -outputFormat tabbedEntities
-	```
+		java -mx600m -cp "./stanford-ner/*:./stanford-ner/lib/*" edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier stanford-ner/classifiers/english.all.3class.distsim.crf.ser.gz -textFile transcript-to-geojson/transcripts/nypl-live/live-from-the-nypl-elizabeth-alexander--hilton-als.text -outputFormat tabbedEntities
 
 If that works, run the index.js script with:
 
-	```
-	node index.js <transcript-file>
-	```
+		node index.js <transcript-file>
 
 ### About
 
@@ -51,7 +43,7 @@ Communities assign meaning to archival collections and what better way to connec
 
 ### The Plan
 
-Using Stanford’s Natural Language Entity Extraction tools identify locations within the transcripts of audio recordings. Geocode these locations and plot them on a map. 
+Using Stanford’s Natural Language Entity Extraction tools identify locations within the transcripts of audio recordings. Geocode these locations and plot them on a map.
 
 ### The Tools
 
